@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/akerl/madlibrarian/utils"
 
@@ -10,11 +11,18 @@ import (
 
 func generateRunner(cmd *cobra.Command, args []string) error {
 	if len(args) != 1 {
-		return fmt.Errorf("No file provided. See --help for more info")
+		return fmt.Errorf("No config path provided. See --help for more info")
 	}
 
-	filePath := args[0]
-	s, err := utils.NewStoryFromFile(filePath)
+	path := args[0]
+	var s utils.Story
+	var err error
+
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		s, err = utils.NewStoryFromURL(path)
+	} else {
+		s, err = utils.NewStoryFromFile(path)
+	}
 	if err != nil {
 		return err
 	}
@@ -28,7 +36,7 @@ func generateRunner(cmd *cobra.Command, args []string) error {
 }
 
 var generateCmd = &cobra.Command{
-	Use:   "generate FILE",
+	Use:   "generate PATH",
 	Short: "generate a quote",
 	RunE:  generateRunner,
 }

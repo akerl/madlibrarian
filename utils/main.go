@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"text/template"
 
 	"gopkg.in/yaml.v2"
@@ -38,6 +39,25 @@ func NewStoryFromFile(filePath string) (Story, error) {
 	}
 
 	err = yaml.Unmarshal(file, &s)
+	return s, err
+}
+
+// NewStoryFromURL loads a new Story generator from a URL to a config file
+func NewStoryFromURL(url string) (Story, error) {
+	s := Story{}
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return s, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return s, err
+	}
+
+	err = yaml.Unmarshal(body, &s)
 	return s, err
 }
 
