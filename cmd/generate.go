@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/akerl/madlibrarian/utils"
 
@@ -15,14 +14,7 @@ func generateRunner(cmd *cobra.Command, args []string) error {
 	}
 
 	path := args[0]
-	var s utils.Story
-	var err error
-
-	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
-		s, err = utils.NewStoryFromURL(path)
-	} else {
-		s, err = utils.NewStoryFromFile(path)
-	}
+	s, err := utils.NewStoryFromPath(path)
 	if err != nil {
 		return err
 	}

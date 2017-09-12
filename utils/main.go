@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"gopkg.in/yaml.v2"
@@ -25,8 +26,16 @@ type Metadata struct {
 type Story struct {
 	Meta        Metadata
 	Data        map[string]interface{}
-	typeObj     storyType
+	TypeObj     storyType `yaml:"-"`
 	templateObj *template.Template
+}
+
+// NewStoryFromPath loads a new story generator from a file or URL
+func NewStoryFromPath(path string) (Story, error) {
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		return NewStoryFromURL(path)
+	}
+	return NewStoryFromFile(path)
 }
 
 // NewStoryFromFile loads a new Story generator from a config file
@@ -69,15 +78,15 @@ func (s *Story) Generate() (string, error) {
 	if s.Meta.Template == "" {
 		s.Meta.Template = defaultTemplate
 	}
-	if s.typeObj == nil {
+	if s.TypeObj == nil {
 		storyFunc, ok := storyTypes[s.Meta.Type]
 		if !ok {
 			return "", fmt.Errorf("Type not supported: %s", s.Meta.Type)
 		}
-		s.typeObj = storyFunc()
+		s.TypeObj = storyFunc()
 	}
 	if s.templateObj == nil {
-		funcMap, err := s.typeObj.Funcs(s)
+		funcMap, err := s.TypeObj.Funcs(s)
 		if err != nil {
 			return "", err
 		}
@@ -101,4 +110,5 @@ type storyType interface {
 
 var storyTypes = map[string]func() storyType{
 	"local": func() storyType { return localStory{} },
+	"s3":    func() storyType { return s3Story{} },
 }
