@@ -41,13 +41,13 @@ func ifaceToStringSlice(i interface{}) ([]string, error) {
 }
 
 func getRandomIndex(max int) (int, error) {
-	maxBig := int64(max)
+	maxBig := int64(max - 1)
 	n, err := rand.Int(rand.Reader, big.NewInt(maxBig))
 	if err != nil {
 		return 0, err
 	}
 	i := int(n.Int64())
-	return i - 1, nil
+	return i, nil
 }
 
 func localRandomizer(list []string) func() (string, error) {
