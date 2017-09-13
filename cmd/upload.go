@@ -16,46 +16,14 @@ func uploadRunner(cmd *cobra.Command, args []string) error {
 
 	path := args[0]
 	bucket := args[1]
-	prefix := args[2] // TODO: Add some kind of UUID here
+	prefix := args[2]
 
 	s, err := utils.NewStoryFromPath(path)
 	if err != nil {
 		return err
 	}
 
-	_, err = s.Generate()
-	if err != nil {
-		return err
-	}
-
-	if s.Meta.Type != "local" {
-		return fmt.Errorf("Upload only makes sense for local stories")
-	}
-
-	var chunks []string
-	funcMap, err := s.TypeObj.Funcs(&s)
-	if err != nil {
-		return err
-	}
-	for name := range funcMap {
-		chunks = append(chunks, name)
-	}
-
-	newStory := utils.Story{
-		Meta: utils.Metadata{
-			Type:     "s3",
-			Template: s.Meta.Template,
-		},
-		Data: map[string]interface{}{
-			"s3": map[string]string{
-				"bucket": bucket,
-				"prefix": prefix,
-			},
-			"chunks": chunks,
-		},
-	}
-
-	err = utils.Upload(s, bucket, prefix)
+	newStory, err := s.Upload(bucket, prefix)
 	if err != nil {
 		return err
 	}

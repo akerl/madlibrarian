@@ -2,16 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-)
-
-const (
-	keyMax = 100000000
 )
 
 var s3Session = s3SessionObj{}
@@ -61,34 +56,6 @@ func (s *s3SessionObj) Client() *s3.S3 {
 	return s.client
 }
 
-func makeS3Key(prefix, chunk string, index int) string {
-	return fmt.Sprintf("%s/%s/%09d", prefix, chunk, index)
-}
-
-// Upload takes a Story and puts its quotes in S3
-func Upload(s Story, bucket string, prefix string) error {
-	uploader := s3Session.Uploader()
-
-	for chunk, iface := range s.Data {
-		list, err := ifaceToStringSlice(iface)
-		if err != nil {
-			return err
-		}
-		step := keyMax / len(list)
-		counter := 0
-		for _, line := range list {
-			counter += step
-			key := makeS3Key(prefix, chunk, counter)
-			_, err = uploader.Upload(&s3manager.UploadInput{
-				Bucket: aws.String(bucket),
-				Key:    aws.String(key),
-				Body:   strings.NewReader(line),
-			})
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
+func makeS3Key(prefix, chunk string, key interface{}) string {
+	return fmt.Sprintf("%s/%s/%v", prefix, chunk, key)
 }

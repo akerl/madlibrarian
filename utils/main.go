@@ -16,6 +16,8 @@ const (
 	defaultTemplate = "{{quote}}"
 )
 
+var urlPrefixes = []string{"http://", "https://"}
+
 // Metadata describes the configuration of a story
 type Metadata struct {
 	Type     string
@@ -24,91 +26,108 @@ type Metadata struct {
 
 // Story is metadata plus a set of variable chunks
 type Story struct {
-	Meta        Metadata
-	Data        map[string]interface{}
-	TypeObj     storyType `yaml:"-"`
-	templateObj *template.Template
+	Meta     Metadata
+	Data     map[string]interface{}
+	author   author
+	template *template.Template
 }
 
 // NewStoryFromPath loads a new story generator from a file or URL
 func NewStoryFromPath(path string) (Story, error) {
-	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
-		return NewStoryFromURL(path)
+	for _, prefix := range urlPrefixes {
+		if strings.HasPrefix(path, prefix) {
+			return NewStoryFromURL(path)
+		}
 	}
 	return NewStoryFromFile(path)
 }
 
 // NewStoryFromFile loads a new Story generator from a config file
 func NewStoryFromFile(filePath string) (Story, error) {
-	s := Story{}
-
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return s, err
+		return Story{}, err
 	}
 
-	err = yaml.Unmarshal(file, &s)
-	return s, err
+	return NewStoryFromText(file)
 }
 
 // NewStoryFromURL loads a new Story generator from a URL to a config file
 func NewStoryFromURL(url string) (Story, error) {
-	s := Story{}
-
 	resp, err := http.Get(url)
 	if err != nil {
-		return s, err
+		return Story{}, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return s, err
+		return Story{}, err
 	}
 
-	err = yaml.Unmarshal(body, &s)
+	return NewStoryFromText(body)
+}
+
+// NewStoryFromText loads a new Story generator from a string
+func NewStoryFromText(text []byte) (Story, error) {
+	s := Story{}
+	err := yaml.Unmarshal(text, &s)
+	if err != nil {
+		return s, err
+	}
+	err = s.Init()
 	return s, err
 }
 
-// Generate creates a story string
-func (s *Story) Generate() (string, error) {
+// Init sets up initial state for the Story object
+func (s *Story) Init() error {
 	if s.Meta.Type == "" {
 		s.Meta.Type = defaultType
 	}
 	if s.Meta.Template == "" {
 		s.Meta.Template = defaultTemplate
 	}
-	if s.TypeObj == nil {
-		storyFunc, ok := storyTypes[s.Meta.Type]
+	if s.author == nil {
+		authorFunc, ok := authorTypes[s.Meta.Type]
 		if !ok {
-			return "", fmt.Errorf("Type not supported: %s", s.Meta.Type)
+			return fmt.Errorf("Type not supported: %s", s.Meta.Type)
 		}
-		s.TypeObj = storyFunc()
+		s.author = authorFunc()
 	}
-	if s.templateObj == nil {
-		funcMap, err := s.TypeObj.Funcs(s)
+	if s.template == nil {
+		funcMap, err := s.author.Funcs(s)
 		if err != nil {
-			return "", err
+			return err
 		}
-		s.templateObj, err = template.New("").Funcs(funcMap).Parse(s.Meta.Template)
+		s.template, err = template.New("").Funcs(funcMap).Parse(s.Meta.Template)
 		if err != nil {
-			return "", err
+			return err
 		}
 	}
+	return nil
+}
 
+// Generate creates a story string
+func (s *Story) Generate() (string, error) {
 	var result bytes.Buffer
-	err := s.templateObj.Execute(&result, "")
+	err := s.template.Execute(&result, "")
 	if err != nil {
 		return "", err
 	}
 	return result.String(), nil
 }
 
-type storyType interface {
-	Funcs(*Story) (template.FuncMap, error)
+// Upload copies a story into S3
+func (s *Story) Upload(bucket, prefix string) (*Story, error) {
+	return s.author.Upload(s, bucket, prefix)
 }
 
-var storyTypes = map[string]func() storyType{
-	"local": func() storyType { return localStory{} },
-	"s3":    func() storyType { return s3Story{} },
+type author interface {
+	Funcs(*Story) (template.FuncMap, error)
+	Upload(*Story, string, string) (*Story, error)
+}
+
+var authorTypes = map[string]func() author{
+	"local": func() author { return localAuthor{} },
+	"s3":    func() author { return s3Author{} },
 }

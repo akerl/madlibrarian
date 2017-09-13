@@ -3,16 +3,21 @@ package utils
 import (
 	"fmt"
 	"io/ioutil"
+	"strconv"
 	"text/template"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-type s3Story struct {
+type s3Author struct {
 }
 
-func (ss s3Story) Funcs(s *Story) (template.FuncMap, error) {
+func (sa s3Author) Upload(_ *Story, _, _ string) (*Story, error) {
+	return &Story{}, fmt.Errorf("Uploading doesn't make sense for S3-backed stories")
+}
+
+func (sa s3Author) Funcs(s *Story) (template.FuncMap, error) {
 	funcMap := template.FuncMap{}
 
 	s3InfoIface, ok := s.Data["s3"]
@@ -64,28 +69,33 @@ func s3Randomizer(s3Info map[string]string, chunk string) func() (string, error)
 		}
 
 		client := s3Session.Client()
-		random, err := getRandomIndex(keyMax)
+
+		maxObj, err := client.GetObject(&s3.GetObjectInput{
+			Bucket: aws.String(bucket),
+			Key:    aws.String(fmt.Sprintf("%s/%s/max", prefix, chunk)),
+		})
 		if err != nil {
 			return "", err
 		}
-		randKey := makeS3Key(prefix, chunk, random)
 
-		list, err := client.ListObjectsV2(&s3.ListObjectsV2Input{
-			Bucket:     aws.String(bucket),
-			MaxKeys:    aws.Int64(1),
-			StartAfter: aws.String(randKey),
-		})
+		maxStr, err := ioutil.ReadAll(maxObj.Body)
 		if err != nil {
-			return "", nil
+			return "", err
 		}
-		if len(list.Contents) != 1 {
-			return "", fmt.Errorf("No results found in bucket for %s", chunk)
+		max, err := strconv.Atoi(string(maxStr))
+		if err != nil {
+			return "", err
 		}
-		key := list.Contents[0].Key
+
+		random, err := getRand(max)
+		if err != nil {
+			return "", err
+		}
+		key := makeS3Key(prefix, chunk, random)
 
 		resultObj, err := client.GetObject(&s3.GetObjectInput{
 			Bucket: aws.String(bucket),
-			Key:    key,
+			Key:    aws.String(key),
 		})
 		if err != nil {
 			return "", err
