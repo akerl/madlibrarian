@@ -46,7 +46,7 @@ func (la localAuthor) uploadChunk(bucket, prefix, chunk string, list []string) e
 	for _, line := range list {
 		counter++
 		if err := la.uploadItem(bucket, prefix, chunk, counter, line); err != nil {
-			return nil
+			return err
 		}
 	}
 	key := makeS3Key(prefix, chunk, "max")
