@@ -33,8 +33,8 @@
     "service/s3/s3manager",
     "service/sts"
   ]
-  revision = "ce48e67ca697079662aee65a13202f37a185962b"
-  version = "v1.13.6"
+  revision = "aace5875a5c3b85a3902c6d72b9caed301d64cce"
+  version = "v1.13.8"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -57,7 +57,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "a1e4933ab784095895e33dbe9f001ba10cfe2060"
+  revision = "c6c44e6fdcc30161c7f4480754da7230d01c06e3"
 
 [[projects]]
   name = "github.com/spf13/pflag"
