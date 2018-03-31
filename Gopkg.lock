@@ -34,8 +34,8 @@
     "service/s3/s3manager",
     "service/sts"
   ]
-  revision = "c0ea8ae46aeed5902eeebe10d0d5cdf54b258526"
-  version = "v1.13.19"
+  revision = "74ca63959be8b9a9a24cd86eaaea8bf99de8022d"
+  version = "v1.13.25"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -58,7 +58,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
+  revision = "4dab30cb33e6633c33c787106bafbfbfdde7842d"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -69,8 +69,8 @@
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
-  version = "v2.1.1"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
