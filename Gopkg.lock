@@ -38,8 +38,8 @@
     "service/s3/s3manager",
     "service/sts"
   ]
-  revision = "f70339bb6af843c8ab1974381b3f4fcaee2b1a41"
-  version = "v1.15.5"
+  revision = "e2b22a3b42bdad95d52bf59f477bdcd57f38191d"
+  version = "v1.15.6"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -79,6 +79,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9d9358d4dbf93417f609a7b6a246dab071c122f036cedae3c3e7b990b796038b"
+  inputs-digest = "1e062ec88e0695d064e97414d4e2cda684f9b36d1016037cb5cfa094899b7332"
   solver-name = "gps-cdcl"
   solver-version = 1
