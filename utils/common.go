@@ -17,19 +17,18 @@ func getRand(max int) (int, error) {
 }
 
 func ifaceToStringSlice(i interface{}) ([]string, error) {
-	var list []string
-
 	iSlice, ok := i.([]interface{})
 	if !ok {
-		return list, fmt.Errorf("YAML section is not a list")
+		return []string{}, fmt.Errorf("YAML section is not a list")
 	}
 
-	for _, iStr := range iSlice {
+	list := make([]string, len(iSlice))
+	for index, iStr := range iSlice {
 		str, ok := iStr.(string)
 		if !ok {
 			return list, fmt.Errorf("YAML entry not a string")
 		}
-		list = append(list, str)
+		list[index] = str
 	}
 	return list, nil
 }

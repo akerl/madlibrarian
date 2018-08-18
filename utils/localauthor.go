@@ -17,7 +17,7 @@ func (la localAuthor) Upload(s *Story, bucket, prefix string) (*Story, error) {
 	if err != nil {
 		return &Story{}, err
 	}
-	var chunkNames []string
+	chunkNames := []string{}
 	for chunk, list := range chunks {
 		chunkNames = append(chunkNames, chunk)
 		if err := la.uploadChunk(bucket, prefix, chunk, list); err != nil {
