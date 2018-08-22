@@ -44,7 +44,7 @@ func NewStoryFromPath(path string) (Story, error) {
 
 // NewStoryFromFile loads a new Story generator from a config file
 func NewStoryFromFile(filePath string) (Story, error) {
-	file, err := ioutil.ReadFile(filePath)
+	file, err := ioutil.ReadFile(filePath) // #nosec
 	if err != nil {
 		return Story{}, err
 	}
@@ -58,7 +58,11 @@ func NewStoryFromURL(url string) (Story, error) {
 	if err != nil {
 		return Story{}, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
