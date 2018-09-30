@@ -38,14 +38,14 @@
     "service/s3/s3manager",
     "service/sts"
   ]
-  revision = "85d9dfd77e6d694e83c3ac054141cb5e81eecc7f"
-  version = "v1.15.43"
+  revision = "a8ff9e4804fc89c994b731b1c057640ab2aecff3"
+  version = "v1.15.45"
 
 [[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
-  revision = "5cf292cae48347c2490ac1a58fe36735fb78df7e"
-  version = "v1.38.2"
+  revision = "7b294651033cd7d9e7f0d9ffa1b75ed1e198e737"
+  version = "v1.38.3"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
