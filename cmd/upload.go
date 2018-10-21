@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/akerl/madlibrarian/utils"
-
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
