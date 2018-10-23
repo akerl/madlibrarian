@@ -40,8 +40,8 @@
     "service/s3/s3manager",
     "service/sts"
   ]
-  revision = "c0037b52736b07cea4e0cb6521f7995adef833bc"
-  version = "v1.15.59"
+  revision = "58fbceeaf77b78c7aa2d44b7a93431eba0468917"
+  version = "v1.15.60"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
