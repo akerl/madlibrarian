@@ -5,7 +5,7 @@ import (
 
 	"github.com/akerl/madlibrarian/utils"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 func uploadRunner(cmd *cobra.Command, args []string) error {
