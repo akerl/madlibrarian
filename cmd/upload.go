@@ -8,9 +8,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-func uploadRunner(cmd *cobra.Command, args []string) error {
+func uploadRunner(_ *cobra.Command, args []string) error {
 	if len(args) != 3 {
-		return fmt.Errorf("Invalid arguments provided. See --help for more info")
+		return fmt.Errorf("invalid arguments provided. See --help for more info")
 	}
 
 	path := args[0]

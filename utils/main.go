@@ -94,7 +94,7 @@ func (s *Story) Init() error {
 	if s.author == nil {
 		authorFunc, ok := authorTypes[s.Meta.Type]
 		if !ok {
-			return fmt.Errorf("Type not supported: %s", s.Meta.Type)
+			return fmt.Errorf("type not supported: %s", s.Meta.Type)
 		}
 		s.author = authorFunc()
 	}

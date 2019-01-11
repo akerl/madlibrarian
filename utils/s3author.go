@@ -14,7 +14,7 @@ type s3Author struct {
 }
 
 func (sa s3Author) Upload(_ *Story, _, _ string) (*Story, error) {
-	return &Story{}, fmt.Errorf("Uploading doesn't make sense for S3-backed stories")
+	return &Story{}, fmt.Errorf("uploading doesn't make sense for S3-backed stories")
 }
 
 func (sa s3Author) Funcs(s *Story) (template.FuncMap, error) {
@@ -22,29 +22,29 @@ func (sa s3Author) Funcs(s *Story) (template.FuncMap, error) {
 
 	s3InfoIface, ok := s.Data["s3"]
 	if !ok {
-		return funcMap, fmt.Errorf("No S3 section in YAML")
+		return funcMap, fmt.Errorf("no S3 section in YAML")
 	}
 	s3InfoRaw, ok := s3InfoIface.(map[interface{}]interface{})
 	if !ok {
-		return funcMap, fmt.Errorf("S3 section is not a map of strings to strings")
+		return funcMap, fmt.Errorf("s3 section is not a map of strings to strings")
 	}
 
 	s3Info := make(map[string]string)
 	for key, value := range s3InfoRaw {
 		sKey, ok := key.(string)
 		if !ok {
-			return funcMap, fmt.Errorf("S3 key not a string: %s", key)
+			return funcMap, fmt.Errorf("s3 key not a string: %s", key)
 		}
 		sValue, ok := value.(string)
 		if !ok {
-			return funcMap, fmt.Errorf("S3 value not a string: key %s", key)
+			return funcMap, fmt.Errorf("s3 value not a string: key %s", key)
 		}
 		s3Info[sKey] = sValue
 	}
 
 	chunksIface, ok := s.Data["chunks"]
 	if !ok {
-		return funcMap, fmt.Errorf("Chunks not defined")
+		return funcMap, fmt.Errorf("chunks not defined")
 	}
 	chunks, err := ifaceToStringSlice(chunksIface)
 	if err != nil {
@@ -61,11 +61,11 @@ func s3Randomizer(s3Info map[string]string, chunk string) func() (string, error)
 	return func() (string, error) {
 		bucket, ok := s3Info["bucket"]
 		if !ok {
-			return "", fmt.Errorf("No bucket in config")
+			return "", fmt.Errorf("no bucket in config")
 		}
 		prefix, ok := s3Info["prefix"]
 		if !ok {
-			return "", fmt.Errorf("No prefix in config")
+			return "", fmt.Errorf("no prefix in config")
 		}
 
 		client := s3Session.Client()
