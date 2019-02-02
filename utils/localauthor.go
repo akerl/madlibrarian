@@ -54,6 +54,7 @@ func (la localAuthor) uploadChunk(bucket, prefix, chunk string, list []string) e
 	return la.uploadFile(bucket, key, counterStr)
 }
 
+//revive:disable-next-line:argument-limit
 func (la localAuthor) uploadItem(bucket, prefix, chunk string, counter int, line string) error {
 	key := makeS3Key(prefix, chunk, counter)
 	return la.uploadFile(bucket, key, line)
