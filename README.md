@@ -1,7 +1,7 @@
 madlibrarian
 =========
 
-[![Build Status](https://img.shields.io/travis/com/akerl/madlibrarian.svg)](https://travis-ci.com/akerl/madlibrarian)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/akerl/madlibrarian/Build)](https://github.com/akerl/madlibrarian/actions)
 [![GitHub release](https://img.shields.io/github/release/akerl/madlibrarian.svg)](https://github.com/akerl/madlibrarian/releases)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
