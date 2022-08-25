@@ -132,6 +132,10 @@ type author interface {
 }
 
 var authorTypes = map[string]func() author{
-	"local": func() author { return localAuthor{} },
-	"s3":    func() author { return s3Author{} },
+	"local": func() author {
+		return localAuthor{}
+	},
+	"s3": func() author {
+		return s3Author{}
+	},
 }
