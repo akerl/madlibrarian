@@ -1,4 +1,4 @@
-package utils
+package stories
 
 import (
 	"bytes"

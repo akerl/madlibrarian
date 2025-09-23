@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/akerl/madlibrarian/utils"
+	"github.com/akerl/madlibrarian/stories"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -17,7 +17,7 @@ func uploadRunner(_ *cobra.Command, args []string) error {
 	bucket := args[1]
 	prefix := args[2]
 
-	s, err := utils.NewStoryFromPath(path)
+	s, err := stories.NewStoryFromPath(path)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package utils
+package stories
 
 import (
 	"fmt"
@@ -82,12 +82,12 @@ func s3Randomizer(s3Info map[string]string, chunk string) func() (string, error)
 		if err != nil {
 			return "", err
 		}
-		max, err := strconv.Atoi(string(maxStr))
+		m, err := strconv.Atoi(string(maxStr))
 		if err != nil {
 			return "", err
 		}
 
-		random, err := getRand(max)
+		random, err := getRand(m)
 		if err != nil {
 			return "", err
 		}

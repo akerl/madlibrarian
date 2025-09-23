@@ -1,4 +1,4 @@
-package utils
+package stories
 
 import (
 	"crypto/rand"
@@ -6,8 +6,8 @@ import (
 	"math/big"
 )
 
-func getRand(max int) (int, error) {
-	maxBig := int64(max)
+func getRand(m int) (int, error) {
+	maxBig := int64(m)
 	n, err := rand.Int(rand.Reader, big.NewInt(maxBig))
 	if err != nil {
 		return 0, err

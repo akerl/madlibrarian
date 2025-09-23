@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/akerl/madlibrarian/utils"
+	"github.com/akerl/madlibrarian/stories"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +13,7 @@ func generateRunner(_ *cobra.Command, args []string) error {
 	}
 
 	path := args[0]
-	s, err := utils.NewStoryFromPath(path)
+	s, err := stories.NewStoryFromPath(path)
 	if err != nil {
 		return err
 	}
